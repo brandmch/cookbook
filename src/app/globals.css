@@ -19,6 +19,21 @@
     --destructive: 0 62% 55%;
     --destructive-foreground: 0 0% 98%;
     --radius: 0.375rem;
+
+    /* Cookbook palette as CSS custom properties (usable in inline styles) */
+    --cream-0: #faf4e6;
+    --cream-1: #f3ead6;
+    --cream-2: #ece0c8;
+    --cream-3: #e2d3b6;
+    --ink: #3a2c20;
+    --ink-soft: #6e5a48;
+    --ink-faint: #9a866f;
+    --line: #d8c7a8;
+    --accent: #bf6243;
+    --accent-deep: #9c4a30;
+    --accent-soft: #ecc8b6;
+    --secondary: #7c8a5b;
+    --honey: #c9a24a;
   }
 }
 
@@ -90,6 +105,13 @@
   /* Eyebrow label */
   .eyebrow {
     @apply font-mono text-[12px] tracking-[.18em] uppercase text-ink-faint font-semibold;
+  }
+
+  /* Index card base */
+  .idxcard {
+    background-color: #faf4e6;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 #fff inset, 0 2px 5px rgba(58,44,32,.10), 0 14px 28px -18px rgba(58,44,32,.45);
   }
 
   /* Decorative tape strip */

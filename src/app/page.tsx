@@ -2,9 +2,8 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { LandingPage } from "@/components/LandingPage";
 
-// Landing page: authenticated users go to their cookbook wall,
-// unauthenticated users see the marketing landing page.
 export default async function RootPage() {
   const session = await getServerSession(authOptions);
 
@@ -22,6 +21,5 @@ export default async function RootPage() {
     }
   }
 
-  // TODO: replace with real landing page (Phase 3+)
-  redirect("/login");
+  return <LandingPage />;
 }
