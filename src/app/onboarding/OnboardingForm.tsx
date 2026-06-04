@@ -6,17 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-")
-    .slice(0, 50)
-    .replace(/-$/, "");
-}
+import { generateSlug } from "@/lib/slug-utils";
 
 type Step = 1 | 2 | 3;
 
@@ -34,7 +24,7 @@ export default function OnboardingForm({ userName }: { userName: string }) {
   const [finalSlug, setFinalSlug] = useState("");
 
   useEffect(() => {
-    setSlugPreview(slugify(cookbookName));
+    setSlugPreview(generateSlug(cookbookName));
   }, [cookbookName]);
 
   async function handleCreate() {

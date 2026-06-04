@@ -62,17 +62,15 @@ export default async function RecipeDetailPage({
   });
   if (!recipe) notFound();
 
-  const cookbooks = (user?.memberships ?? []).map((m) => m.cookbook);
   const isAuthor = recipe.contributorId === session.user.id;
 
   return (
     <div className="min-h-screen paper">
       <TopBar
-        currentSlug={slug}
-        cookbooks={cookbooks}
         userName={user?.name ?? ""}
         userEmail={user?.email ?? session.user.email ?? ""}
         userImage={user?.image}
+        cookbookSlug={cookbook.slug}
       />
       <RecipeDetail
         cookbookSlug={cookbook.slug}

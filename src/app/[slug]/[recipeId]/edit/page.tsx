@@ -63,8 +63,6 @@ export default async function EditRecipePage({
   if (!recipe) notFound();
   if (recipe.contributorId !== session.user.id) redirect(`/${slug}/${recipeId}`);
 
-  const cookbooks = (user?.memberships ?? []).map((m) => m.cookbook);
-
   const initialValues = {
     title: recipe.title,
     category: recipe.category,
@@ -82,11 +80,10 @@ export default async function EditRecipePage({
   return (
     <div className="min-h-screen paper">
       <TopBar
-        currentSlug={slug}
-        cookbooks={cookbooks}
         userName={user?.name ?? ""}
         userEmail={user?.email ?? session.user.email ?? ""}
         userImage={user?.image}
+        cookbookSlug={cookbook.slug}
       />
       <AddRecipeForm
         cookbookSlug={cookbook.slug}

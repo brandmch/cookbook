@@ -39,16 +39,13 @@ export default async function NewRecipePage({
   const isMember = cookbook.members.some((m) => m.userId === session.user.id);
   if (!isMember) redirect("/onboarding");
 
-  const cookbooks = (user?.memberships ?? []).map((m) => m.cookbook);
-
   return (
     <div className="min-h-screen paper">
       <TopBar
-        currentSlug={slug}
-        cookbooks={cookbooks}
         userName={user?.name ?? ""}
         userEmail={user?.email ?? session.user.email ?? ""}
         userImage={user?.image}
+        cookbookSlug={cookbook.slug}
       />
       <AddRecipeForm cookbookSlug={cookbook.slug} />
     </div>
