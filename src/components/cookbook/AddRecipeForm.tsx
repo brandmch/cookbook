@@ -35,21 +35,41 @@ function useRowList<T extends { key: string }>(initial: T[]) {
   return { rows, add, remove, update, setRows };
 }
 
-type Props = { cookbookSlug: string };
+type InitialValues = {
+  title: string;
+  category: string;
+  story: string;
+  serves: number;
+  time: string;
+  ingredients: { quantity: string; unit: string; label: string }[];
+  steps: { text: string }[];
+};
 
-export default function AddRecipeForm({ cookbookSlug }: Props) {
+type Props = {
+  cookbookSlug: string;
+  recipeId?: string;
+  initialValues?: InitialValues;
+};
+
+export default function AddRecipeForm({ cookbookSlug, recipeId, initialValues }: Props) {
   const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Mains");
-  const [story, setStory] = useState("");
-  const [serves, setServes] = useState(4);
-  const [time, setTime] = useState("");
+  const [title, setTitle] = useState(initialValues?.title ?? "");
+  const [category, setCategory] = useState(initialValues?.category ?? "Mains");
+  const [story, setStory] = useState(initialValues?.story ?? "");
+  const [serves, setServes] = useState(initialValues?.serves ?? 4);
+  const [time, setTime] = useState(initialValues?.time ?? "");
 
-  const ingredients = useRowList<IngredientRow>([
-    { key: "1", quantity: "", unit: "", label: "" },
-  ]);
-  const steps = useRowList<StepRow>([{ key: "1", text: "" }]);
+  const ingredients = useRowList<IngredientRow>(
+    initialValues?.ingredients.length
+      ? initialValues.ingredients.map((i, idx) => ({ key: String(idx + 1), ...i }))
+      : [{ key: "1", quantity: "", unit: "", label: "" }],
+  );
+  const steps = useRowList<StepRow>(
+    initialValues?.steps.length
+      ? initialValues.steps.map((s, idx) => ({ key: String(idx + 1), text: s.text }))
+      : [{ key: "1", text: "" }],
+  );
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -62,8 +82,9 @@ export default function AddRecipeForm({ cookbookSlug }: Props) {
     setError("");
 
     try {
-      const res = await fetch("/api/recipes", {
-        method: "POST",
+      const isEdit = Boolean(recipeId);
+      const res = await fetch(isEdit ? `/api/recipes/${recipeId}` : "/api/recipes", {
+        method: isEdit ? "PATCH" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           cookbookSlug,
@@ -89,19 +110,23 @@ export default function AddRecipeForm({ cookbookSlug }: Props) {
     }
   }
 
+  const isEdit = Boolean(recipeId);
+
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-2xl px-4 sm:px-6 py-8 space-y-8 view-enter">
       {/* Back link */}
       <a
-        href={`/${cookbookSlug}`}
+        href={isEdit ? `/${cookbookSlug}/${recipeId}` : `/${cookbookSlug}`}
         className="inline-block font-sans text-sm text-ink/50 hover:text-ink transition-colors"
       >
-        ← Back to cookbook
+        ← {isEdit ? "Back to recipe" : "Back to cookbook"}
       </a>
 
       <div>
-        <p className="eyebrow text-ink/40 mb-1">New recipe</p>
-        <h1 className="font-hand text-4xl text-ink">What are you making?</h1>
+        <p className="eyebrow text-ink/40 mb-1">{isEdit ? "Edit recipe" : "New recipe"}</p>
+        <h1 className="font-hand text-4xl text-ink">
+          {isEdit ? "Make some changes" : "What are you making?"}
+        </h1>
       </div>
 
       {/* ── Section 1: Basics ─────────────────────────────── */}
@@ -306,7 +331,7 @@ export default function AddRecipeForm({ cookbookSlug }: Props) {
         <Button
           type="button"
           variant="ghost"
-          onClick={() => router.push(`/${cookbookSlug}`)}
+          onClick={() => router.push(isEdit ? `/${cookbookSlug}/${recipeId}` : `/${cookbookSlug}`)}
           className="font-slab"
         >
           Cancel
@@ -316,7 +341,7 @@ export default function AddRecipeForm({ cookbookSlug }: Props) {
           disabled={loading || !title.trim()}
           className="flex-1 bg-accent hover:bg-accent/90 text-cream-0 font-slab shadow-btn-primary disabled:opacity-50"
         >
-          {loading ? "Saving…" : "Save recipe →"}
+          {loading ? "Saving…" : isEdit ? "Save changes →" : "Save recipe →"}
         </Button>
       </div>
     </form>

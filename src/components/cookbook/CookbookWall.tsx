@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import RecipeCard from "./RecipeCard";
+import InviteDialog from "./InviteDialog";
 
 const CATEGORIES = ["All", "Mains", "Sides", "Desserts", "Breakfast", "Holiday", "Drinks", "Baking"];
 
@@ -23,11 +24,17 @@ type CookbookWallProps = {
   cookbookSlug: string;
   cookbookName: string;
   recipes: Recipe[];
+  isOwner: boolean;
 };
 
-export default function CookbookWall({ cookbookSlug, cookbookName, recipes }: CookbookWallProps) {
+export default function CookbookWall({ cookbookSlug, cookbookName, recipes, isOwner }: CookbookWallProps) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [inviteOpen, setInviteOpen] = useState(false);
+
+  useEffect(() => {
+    document.cookie = `last-cookbook=${cookbookSlug}; path=/; max-age=${365 * 24 * 60 * 60}; SameSite=Lax`;
+  }, [cookbookSlug]);
 
   const filtered = useMemo(() => {
     return recipes.filter((r) => {
@@ -61,6 +68,15 @@ export default function CookbookWall({ cookbookSlug, cookbookName, recipes }: Co
             className="w-48 sm:w-56 bg-cream-0 border-ink/20 font-sans text-sm text-ink
                        placeholder:text-ink/30 focus-visible:ring-accent/40 focus-visible:border-accent h-8"
           />
+          {isOwner && (
+            <Button
+              variant="ghost"
+              onClick={() => setInviteOpen(true)}
+              className="font-slab text-sm h-8 px-3 text-ink-soft hover:text-ink shrink-0"
+            >
+              Invite
+            </Button>
+          )}
           <Button
             asChild
             className="bg-accent hover:bg-accent/90 text-cream-0 font-slab text-sm h-8 px-3 shadow-btn-primary shrink-0"
@@ -68,6 +84,15 @@ export default function CookbookWall({ cookbookSlug, cookbookName, recipes }: Co
             <Link href={`/${cookbookSlug}/new`}>+ Add recipe</Link>
           </Button>
         </div>
+
+        {isOwner && (
+          <InviteDialog
+            open={inviteOpen}
+            onOpenChange={setInviteOpen}
+            cookbookSlug={cookbookSlug}
+            cookbookName={cookbookName}
+          />
+        )}
       </div>
 
       {/* Category filter chips */}

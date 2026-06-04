@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 type Ingredient = { id: string; quantity: string | null; unit: string | null; label: string; order: number };
@@ -22,6 +23,7 @@ type Props = {
   cookbookSlug: string;
   cookbookName: string;
   recipe: Recipe;
+  isAuthor: boolean;
 };
 
 const CATEGORY_STAMPS: Record<string, string> = {
@@ -80,20 +82,73 @@ function scaleQty(q: string | null, factor: number): string {
 
 // ── Component ─────────────────────────────────────────────
 
-export default function RecipeDetail({ cookbookSlug, recipe }: Props) {
+export default function RecipeDetail({ cookbookSlug, recipe, isAuthor }: Props) {
+  const router = useRouter();
   const [servings, setServings] = useState(recipe.serves);
   const factor = recipe.serves > 0 ? servings / recipe.serves : 1;
   const stampClass = CATEGORY_STAMPS[recipe.category] ?? "stamp-mains";
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/recipes/${recipe.id}`, { method: "DELETE" });
+      if (res.ok) {
+        router.push(`/${cookbookSlug}`);
+      }
+    } finally {
+      setDeleting(false);
+    }
+  }
 
   return (
     <main className="mx-auto max-w-3xl px-4 sm:px-6 py-8 view-enter">
-      {/* Back link */}
-      <Link
-        href={`/${cookbookSlug}`}
-        className="inline-block font-sans text-sm text-ink/50 hover:text-ink transition-colors mb-6"
-      >
-        ← Back to cookbook
-      </Link>
+      {/* Back link + author controls */}
+      <div className="flex items-center justify-between mb-6">
+        <Link
+          href={`/${cookbookSlug}`}
+          className="font-sans text-sm text-ink/50 hover:text-ink transition-colors"
+        >
+          ← Back to cookbook
+        </Link>
+
+        {isAuthor && (
+          <div className="flex items-center gap-3">
+            <Link
+              href={`/${cookbookSlug}/${recipe.id}/edit`}
+              className="font-sans text-sm text-ink/50 hover:text-ink transition-colors"
+            >
+              Edit
+            </Link>
+            {confirmDelete ? (
+              <span className="flex items-center gap-2">
+                <span className="font-sans text-xs text-ink/50">Delete this recipe?</span>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleting}
+                  className="font-sans text-sm text-red-600 hover:text-red-700 transition-colors disabled:opacity-50"
+                >
+                  {deleting ? "Deleting…" : "Yes, delete"}
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(false)}
+                  className="font-sans text-sm text-ink/40 hover:text-ink transition-colors"
+                >
+                  Cancel
+                </button>
+              </span>
+            ) : (
+              <button
+                onClick={() => setConfirmDelete(true)}
+                className="font-sans text-sm text-ink/50 hover:text-red-600 transition-colors"
+              >
+                Delete
+              </button>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Photo slot */}
       <div className="photo-slot w-full h-44 sm:h-56 rounded-[3px] mb-6">
