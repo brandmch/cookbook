@@ -1,8 +1,18 @@
-// Phase 3: 3-step onboarding — name cookbook, profile, done
-export default function OnboardingPage() {
-  return (
-    <div className="min-h-screen paper flex items-center justify-center p-6">
-      <p className="font-hand text-3xl text-ink-soft">Onboarding — coming in Phase 3</p>
-    </div>
-  );
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import { authOptions } from "@/lib/auth";
+import { db } from "@/lib/db";
+import OnboardingForm from "./OnboardingForm";
+
+export default async function OnboardingPage() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) redirect("/login");
+
+  const existing = await db.cookbook.findFirst({
+    where: { ownerId: session.user.id },
+    select: { slug: true },
+  });
+  if (existing) redirect(`/${existing.slug}`);
+
+  return <OnboardingForm userName={session.user.name ?? ""} />;
 }

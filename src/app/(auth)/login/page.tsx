@@ -25,6 +25,7 @@ export default function LoginPage() {
     const result = await signIn("email", {
       email: email.toLowerCase().trim(),
       redirect: false,
+      callbackUrl: "/",
     });
 
     setLoading(false);
@@ -38,6 +39,12 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen paper flex items-center justify-center p-6">
+      <a
+        href="/"
+        className="fixed top-5 left-5 font-sans text-sm text-ink/50 hover:text-ink transition-colors"
+      >
+        ← Back
+      </a>
       <div className="w-full max-w-sm">
 
         {/* Title */}
