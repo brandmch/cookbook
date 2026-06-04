@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import TopBar from "@/components/cookbook/TopBar";
+import CookbookWall from "@/components/cookbook/CookbookWall";
 
 export default async function CookbookWallPage({
   params,
@@ -16,9 +17,31 @@ export default async function CookbookWallPage({
 
   const cookbook = await db.cookbook.findUnique({
     where: { slug },
-    select: { id: true, name: true },
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      members: { select: { userId: true } },
+      recipes: {
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          category: true,
+          story: true,
+          serves: true,
+          time: true,
+          contributor: { select: { name: true } },
+        },
+      },
+    },
   });
+
   if (!cookbook) notFound();
+
+  const isMember = cookbook.members.some((m) => m.userId === session.user.id);
+  if (!isMember) redirect("/onboarding");
 
   const user = await db.user.findUnique({
     where: { id: session.user.id },
@@ -33,13 +56,11 @@ export default async function CookbookWallPage({
         userEmail={user?.email ?? session.user.email ?? ""}
         userImage={user?.image}
       />
-
-      {/* Phase 4: recipe grid goes here */}
-      <main className="mx-auto max-w-5xl px-4 sm:px-6 py-10">
-        <p className="font-hand text-3xl text-ink-soft">
-          {cookbook.name} — recipes coming in Phase 4
-        </p>
-      </main>
+      <CookbookWall
+        cookbookSlug={cookbook.slug}
+        cookbookName={cookbook.name}
+        recipes={cookbook.recipes}
+      />
     </div>
   );
 }

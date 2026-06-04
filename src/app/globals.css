@@ -123,6 +123,12 @@
     border-right: 1px dashed rgba(255, 255, 255, 0.5);
   }
 
+  /* Shared form field style */
+  .field {
+    @apply bg-cream-0 border-ink/20 font-sans text-ink placeholder:text-ink/30;
+    @apply focus-visible:ring-accent/40 focus-visible:border-accent;
+  }
+
   /* View slide-up transition */
   .view-enter {
     animation: viewIn 0.36s cubic-bezier(0.2, 0.7, 0.3, 1);
