@@ -1,11 +1,12 @@
 import { notFound, redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
+import Link from "next/link";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import TopBar from "@/components/cookbook/TopBar";
-import CookbookWall from "@/components/cookbook/CookbookWall";
+import SettingsMembers from "@/components/cookbook/SettingsMembers";
 
-export default async function CookbookWallPage({
+export default async function SettingsPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -22,18 +23,13 @@ export default async function CookbookWallPage({
         id: true,
         name: true,
         slug: true,
-        members: { select: { userId: true, role: true } },
-        recipes: {
-          orderBy: { createdAt: "desc" },
+        members: {
+          orderBy: { joinedAt: "asc" },
           select: {
-            id: true,
-            slug: true,
-            title: true,
-            category: true,
-            story: true,
-            serves: true,
-            time: true,
-            contributor: { select: { name: true } },
+            userId: true,
+            role: true,
+            joinedAt: true,
+            user: { select: { name: true, email: true } },
           },
         },
       },
@@ -60,6 +56,19 @@ export default async function CookbookWallPage({
   const isOwner = currentMember.role === "OWNER";
   const cookbooks = (user?.memberships ?? []).map((m) => m.cookbook);
 
+  const members = cookbook.members.map((m) => ({
+    ...m,
+    joinedAt: m.joinedAt.toISOString(),
+  }));
+
+  const pendingInvites = isOwner
+    ? await db.invite.findMany({
+        where: { cookbookId: cookbook.id, status: "PENDING", expiresAt: { gt: new Date() } },
+        select: { id: true, email: true },
+        orderBy: { createdAt: "asc" },
+      })
+    : [];
+
   return (
     <div className="min-h-screen paper">
       <TopBar
@@ -68,13 +77,29 @@ export default async function CookbookWallPage({
         userImage={user?.image}
         cookbookSlug={cookbook.slug}
       />
-      <CookbookWall
-        cookbookSlug={cookbook.slug}
-        cookbookName={cookbook.name}
-        cookbooks={cookbooks}
-        recipes={cookbook.recipes}
-        isOwner={isOwner}
-      />
+
+      <main className="mx-auto max-w-2xl px-4 sm:px-6 py-10">
+        <div className="mb-8">
+          <Link
+            href={`/${slug}`}
+            className="font-mono text-xs eyebrow tracking-widest text-ink/40 hover:text-ink/70 transition-colors"
+          >
+            ← Back
+          </Link>
+        </div>
+
+        <h1 className="font-slab text-3xl font-bold text-ink mb-10">Settings</h1>
+
+        <SettingsMembers
+          cookbookSlug={cookbook.slug}
+          cookbookName={cookbook.name}
+          cookbooks={cookbooks}
+          members={members}
+          pendingInvites={pendingInvites}
+          isOwner={isOwner}
+          currentUserId={session.user.id}
+        />
+      </main>
     </div>
   );
 }

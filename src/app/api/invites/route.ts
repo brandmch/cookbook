@@ -169,3 +169,55 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ id: invite.id, email: invite.email, expiresAt: invite.expiresAt }, { status: 201 });
 }
+
+export async function PATCH(req: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  let body: { inviteId: string };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const { inviteId } = body;
+  if (!inviteId) return NextResponse.json({ error: "inviteId is required" }, { status: 400 });
+
+  const invite = await db.invite.findUnique({
+    where: { id: inviteId },
+    select: {
+      id: true,
+      token: true,
+      email: true,
+      status: true,
+      cookbook: { select: { id: true, name: true, owner: { select: { name: true } } } },
+    },
+  });
+  if (!invite) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (invite.status !== "PENDING") return NextResponse.json({ error: "Invite is no longer pending" }, { status: 400 });
+
+  const membership = await db.cookbookMember.findUnique({
+    where: { cookbookId_userId: { cookbookId: invite.cookbook.id, userId: session.user.id } },
+  });
+  if (!membership || membership.role !== "OWNER") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  await db.invite.update({ where: { id: inviteId }, data: { expiresAt } });
+
+  const acceptUrl = `${process.env.NEXTAUTH_URL}/invite/${invite.token}`;
+  const inviterName = invite.cookbook.owner.name ?? "Someone";
+
+  if (process.env.NODE_ENV === "development") {
+    console.log(`\n📧 [resend invite] ${invite.email} → ${acceptUrl}\n`);
+  } else {
+    await resend.emails.send({
+      from: process.env.RESEND_FROM!,
+      to: invite.email,
+      subject: `You're invited to join ${invite.cookbook.name}`,
+      html: inviteEmailHtml({ cookbookName: invite.cookbook.name, inviterName, acceptUrl }),
+    });
+  }
+
+  return NextResponse.json({ ok: true });
+}

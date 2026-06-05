@@ -35,9 +35,7 @@ export default function RecipeCard({ cookbookSlug, recipe }: RecipeCardProps) {
       {/* Photo slot */}
       <div className="photo-slot h-36 rounded-t-[3px]">
         {/* Category stamp in bottom-left */}
-        <span className={`cat-stamp ${stampClass} m-2`}>
-          {recipe.category}
-        </span>
+        <span className={`cat-stamp ${stampClass} m-2`}>{recipe.category}</span>
         {/* Serves + time in bottom-right */}
         <div className="flex flex-col items-end gap-0.5 m-2">
           {recipe.time && (

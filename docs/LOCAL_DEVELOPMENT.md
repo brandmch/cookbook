@@ -100,7 +100,25 @@ This creates all tables and generates the Prisma client. You only need to re-run
 
 ---
 
-## 5. Start the dev server
+## 5. Seed test data (optional but recommended)
+
+The seed script creates a ready-to-use cookbook with 10 recipes so you have something to look at immediately:
+
+```bash
+npm run db:seed
+```
+
+| Field | Value |
+|-------|-------|
+| Email | `test@test.com` |
+| Password | `password` |
+| Cookbook | The Test Kitchen → `/test-kitchen` |
+
+The script is **idempotent** — safe to run multiple times. It skips anything that already exists.
+
+---
+
+## 6. Start the dev server
 
 ```bash
 npm run dev
@@ -117,6 +135,7 @@ The app is now running at [http://localhost:3000](http://localhost:3000).
 | `docker compose up -d` | Start the local DB in the background |
 | `docker compose stop` | Stop the DB (data preserved) |
 | `docker compose down -v` | Stop the DB and delete all data |
+| `npm run db:seed` | Seed 10 test recipes (test@test.com / password) |
 | `npx prisma migrate dev --name <name>` | Create and apply a new migration |
 | `npx prisma studio` | Browse and edit DB data in a browser UI |
 | `npx prisma generate` | Regenerate the Prisma client after schema edits |
