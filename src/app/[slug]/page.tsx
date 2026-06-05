@@ -30,6 +30,7 @@ export default async function CookbookWallPage({
             slug: true,
             title: true,
             category: true,
+            emoji: true,
             story: true,
             serves: true,
             time: true,

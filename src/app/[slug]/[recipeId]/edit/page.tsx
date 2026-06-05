@@ -45,6 +45,7 @@ export default async function EditRecipePage({
       id: true,
       title: true,
       category: true,
+      emoji: true,
       story: true,
       serves: true,
       time: true,
@@ -66,6 +67,7 @@ export default async function EditRecipePage({
   const initialValues = {
     title: recipe.title,
     category: recipe.category,
+    emoji: recipe.emoji,
     story: recipe.story ?? "",
     serves: recipe.serves,
     time: recipe.time ?? "",

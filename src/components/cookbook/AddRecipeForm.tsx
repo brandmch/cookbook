@@ -2,10 +2,14 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+
+const EmojiPicker = dynamic(() => import("@emoji-mart/react"), { ssr: false });
+import emojiData from "@emoji-mart/data";
 
 const CATEGORIES = ["Mains", "Sides", "Desserts", "Breakfast", "Holiday", "Drinks", "Baking"];
 
@@ -38,6 +42,7 @@ function useRowList<T extends { key: string }>(initial: T[]) {
 type InitialValues = {
   title: string;
   category: string;
+  emoji?: string | null;
   story: string;
   serves: number;
   time: string;
@@ -56,6 +61,8 @@ export default function AddRecipeForm({ cookbookSlug, recipeId, initialValues }:
 
   const [title, setTitle] = useState(initialValues?.title ?? "");
   const [category, setCategory] = useState(initialValues?.category ?? "Mains");
+  const [emoji, setEmoji] = useState<string | null>(initialValues?.emoji ?? null);
+  const [showPicker, setShowPicker] = useState(false);
   const [story, setStory] = useState(initialValues?.story ?? "");
   const [serves, setServes] = useState(initialValues?.serves ?? 4);
   const [time, setTime] = useState(initialValues?.time ?? "");
@@ -90,6 +97,7 @@ export default function AddRecipeForm({ cookbookSlug, recipeId, initialValues }:
           cookbookSlug,
           title,
           category,
+          emoji: emoji || null,
           story,
           serves,
           time,
@@ -165,6 +173,54 @@ export default function AddRecipeForm({ cookbookSlug, recipeId, initialValues }:
                 {cat}
               </button>
             ))}
+          </div>
+        </div>
+
+        {/* Emoji picker (optional) */}
+        <div className="space-y-2">
+          <Label className="font-slab text-sm text-ink/80">
+            Emoji{" "}
+            <span className="font-sans text-ink/40 text-xs">(optional)</span>
+          </Label>
+          <div className="relative">
+            {emoji ? (
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowPicker((p) => !p)}
+                  className="text-4xl leading-none hover:scale-110 transition-transform cursor-pointer"
+                  aria-label="Change emoji"
+                >
+                  {emoji}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setEmoji(null); setShowPicker(false); }}
+                  className="font-sans text-xs text-ink/40 hover:text-accent transition-colors"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setShowPicker((p) => !p)}
+                className="font-sans text-sm text-accent hover:text-accent/80 transition-colors"
+              >
+                + Add emoji
+              </button>
+            )}
+            {showPicker && (
+              <div className="absolute top-full mt-2 z-50">
+                <EmojiPicker
+                  data={emojiData}
+                  onEmojiSelect={(e: { native: string }) => {
+                    setEmoji(e.native);
+                    setShowPicker(false);
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
 

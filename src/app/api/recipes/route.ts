@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     where: { cookbookId },
     orderBy: { createdAt: "desc" },
     select: {
-      id: true, slug: true, title: true, category: true,
+      id: true, slug: true, title: true, category: true, emoji: true,
       story: true, serves: true, time: true,
       contributor: { select: { name: true } },
     },
@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
     cookbookSlug: string;
     title: string;
     category: string;
+    emoji?: string;
     story?: string;
     serves: number;
     time?: string;
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { cookbookSlug, title, category, story, serves, time, ingredients, steps } = body;
+  const { cookbookSlug, title, category, emoji, story, serves, time, ingredients, steps } = body;
 
   if (!cookbookSlug || !title?.trim() || !category) {
     return NextResponse.json({ error: "cookbookSlug, title, and category are required" }, { status: 400 });
@@ -90,6 +91,7 @@ export async function POST(req: NextRequest) {
       title: title.trim(),
       slug,
       category,
+      emoji: emoji?.trim() || null,
       story: story?.trim() || null,
       serves: Number(serves) || 4,
       time: time?.trim() || null,

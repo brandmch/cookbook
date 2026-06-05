@@ -109,6 +109,7 @@ model Recipe {
   title         String
   slug          String
   category      String   @default("Mains")
+  emoji         String?
   story         String?  @db.Text
   serves        Int      @default(4)
   time          String?

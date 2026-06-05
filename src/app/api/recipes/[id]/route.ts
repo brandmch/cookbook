@@ -23,6 +23,7 @@ export async function PATCH(
   let body: {
     title?: string;
     category?: string;
+    emoji?: string;
     story?: string;
     serves?: number;
     time?: string;
@@ -35,7 +36,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { title, category, story, serves, time, ingredients, steps } = body;
+  const { title, category, emoji, story, serves, time, ingredients, steps } = body;
 
   const updated = await db.$transaction(async (tx) => {
     if (ingredients !== undefined) {
@@ -71,6 +72,7 @@ export async function PATCH(
       data: {
         ...(title?.trim() && { title: title.trim() }),
         ...(category && { category }),
+        ...(emoji !== undefined && { emoji: emoji?.trim() || null }),
         ...(story !== undefined && { story: story.trim() || null }),
         ...(serves !== undefined && { serves: Number(serves) || 4 }),
         ...(time !== undefined && { time: time.trim() || null }),

@@ -11,6 +11,7 @@ type Recipe = {
   id: string;
   title: string;
   category: string;
+  emoji: string | null;
   story: string | null;
   serves: number;
   time: string | null;
@@ -150,15 +151,25 @@ export default function RecipeDetail({ cookbookSlug, recipe, isAuthor }: Props) 
         )}
       </div>
 
-      {/* Photo slot */}
-      <div className="photo-slot w-full h-44 sm:h-56 rounded-[3px] mb-6">
-        <span className={`cat-stamp ${stampClass} m-3`}>{recipe.category}</span>
-        <div className="flex flex-col items-end gap-1 m-3">
+      {/* Image area */}
+      {recipe.emoji ? (
+        <div className="flex items-center justify-center bg-amber-50 rounded-[3px] w-full h-48 sm:h-56 text-8xl mb-6 relative">
+          <span>{recipe.emoji}</span>
+          <span className={`cat-stamp ${stampClass} absolute bottom-3 left-3`}>{recipe.category}</span>
           {recipe.time && (
-            <span className="font-mono text-[11px] text-white/80">{recipe.time}</span>
+            <span className="font-mono text-[11px] text-ink/60 absolute bottom-3 right-3">{recipe.time}</span>
           )}
         </div>
-      </div>
+      ) : (
+        <div className="photo-slot w-full h-44 sm:h-56 rounded-[3px] mb-6">
+          <span className={`cat-stamp ${stampClass} m-3`}>{recipe.category}</span>
+          <div className="flex flex-col items-end gap-1 m-3">
+            {recipe.time && (
+              <span className="font-mono text-[11px] text-white/80">{recipe.time}</span>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Title + meta */}
       <h1 className="font-hand text-[clamp(36px,5vw,56px)] leading-tight text-ink mb-3">

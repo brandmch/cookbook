@@ -24,6 +24,7 @@ type Recipe = {
   slug: string;
   title: string;
   category: string;
+  emoji: string | null;
   story: string | null;
   serves: number;
   time: string | null;

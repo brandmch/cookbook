@@ -45,6 +45,7 @@ export default async function RecipeDetailPage({
       id: true,
       title: true,
       category: true,
+      emoji: true,
       story: true,
       serves: true,
       time: true,
