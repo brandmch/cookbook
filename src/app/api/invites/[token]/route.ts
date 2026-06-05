@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
@@ -13,6 +13,14 @@ export async function POST(
   if (!session?.user?.id || !session.user.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  let name: string | undefined;
+  try {
+    const body = await req.json();
+    if (typeof body.name === "string" && body.name.trim()) {
+      name = body.name.trim().slice(0, 100);
+    }
+  } catch { /* body may be empty */ }
 
   const invite = await db.invite.findUnique({
     where: { token },
@@ -35,13 +43,15 @@ export async function POST(
   }
 
   // Idempotent: already a member is fine
-  await db.cookbookMember.upsert({
-    where: { cookbookId_userId: { cookbookId: invite.cookbookId, userId: session.user.id } },
-    create: { cookbookId: invite.cookbookId, userId: session.user.id, role: "MEMBER" },
-    update: {},
-  });
-
-  await db.invite.update({ where: { id: invite.id }, data: { status: "ACCEPTED" } });
+  await db.$transaction([
+    ...(name ? [db.user.update({ where: { id: session.user.id }, data: { name } })] : []),
+    db.cookbookMember.upsert({
+      where: { cookbookId_userId: { cookbookId: invite.cookbookId, userId: session.user.id } },
+      create: { cookbookId: invite.cookbookId, userId: session.user.id, role: "MEMBER" },
+      update: {},
+    }),
+    db.invite.update({ where: { id: invite.id }, data: { status: "ACCEPTED" } }),
+  ]);
 
   return NextResponse.json({ cookbookSlug: invite.cookbook.slug });
 }

@@ -5,6 +5,7 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import TopBar from "@/components/cookbook/TopBar";
 import SettingsMembers from "@/components/cookbook/SettingsMembers";
+import SettingsProfile from "@/components/cookbook/SettingsProfile";
 
 export default async function SettingsPage({
   params,
@@ -89,6 +90,11 @@ export default async function SettingsPage({
         </div>
 
         <h1 className="font-slab text-3xl font-bold text-ink mb-10">Settings</h1>
+
+        <SettingsProfile
+          currentName={user?.name ?? null}
+          email={user?.email ?? session.user.email ?? ""}
+        />
 
         <SettingsMembers
           cookbookSlug={cookbook.slug}

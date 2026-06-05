@@ -52,6 +52,11 @@ export default async function InvitePage({
   const inviteEmail = invite.email.toLowerCase();
   const emailMatches = sessionEmail === inviteEmail;
 
+  const sessionUser = session?.user?.id
+    ? await db.user.findUnique({ where: { id: session.user.id }, select: { name: true } })
+    : null;
+  const hasName = !!sessionUser?.name;
+
   return (
     <InviteShell>
       <AcceptInvite
@@ -63,6 +68,7 @@ export default async function InvitePage({
         isSignedIn={!!session}
         emailMatches={emailMatches}
         sessionEmail={sessionEmail}
+        hasName={hasName}
       />
     </InviteShell>
   );

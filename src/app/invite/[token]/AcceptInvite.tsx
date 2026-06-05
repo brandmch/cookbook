@@ -16,6 +16,7 @@ type Props = {
   isSignedIn: boolean;
   emailMatches: boolean;
   sessionEmail: string | null;
+  hasName: boolean;
 };
 
 export default function AcceptInvite({
@@ -26,6 +27,7 @@ export default function AcceptInvite({
   isSignedIn,
   emailMatches,
   sessionEmail,
+  hasName,
 }: Props) {
   if (!isSignedIn) {
     return <SignInToAccept inviteEmail={inviteEmail} token={token} cookbookName={cookbookName} inviterName={inviterName} />;
@@ -45,6 +47,10 @@ export default function AcceptInvite({
         </p>
       </div>
     );
+  }
+
+  if (!hasName) {
+    return <NameAndJoinForm token={token} cookbookName={cookbookName} inviterName={inviterName} />;
   }
 
   return <JoinButton token={token} cookbookName={cookbookName} inviterName={inviterName} />;
@@ -135,6 +141,88 @@ function SignInToAccept({
   );
 }
 
+function NameAndJoinForm({
+  token,
+  cookbookName,
+  inviterName,
+}: {
+  token: string;
+  cookbookName: string;
+  inviterName: string;
+}) {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleJoin() {
+    const trimmed = name.trim();
+    if (!trimmed) { setError("Please enter your name."); return; }
+    if (trimmed.length > 100) { setError("Name must be 100 characters or fewer."); return; }
+
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`/api/invites/${token}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: trimmed }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Something went wrong.");
+        return;
+      }
+      router.push(`/${data.cookbookSlug}`);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="text-center">
+        <p className="text-4xl mb-3">📖</p>
+        <h2 className="font-slab text-xl text-ink font-semibold mb-1">
+          You&apos;re invited!
+        </h2>
+        <p className="font-sans text-sm text-ink-soft">
+          <strong className="text-ink">{inviterName}</strong> wants you to join{" "}
+          <strong className="text-ink">{cookbookName}</strong>.
+        </p>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="name" className="font-slab text-sm text-ink/80">
+          What should we call you?
+        </Label>
+        <Input
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter") handleJoin(); }}
+          placeholder="Your name"
+          maxLength={100}
+          autoFocus
+          className="border-ink/20 font-sans text-ink focus:border-accent"
+        />
+      </div>
+
+      {error && <p className="font-sans text-xs text-red-600">{error}</p>}
+
+      <Button
+        onClick={handleJoin}
+        disabled={loading}
+        className="w-full bg-accent hover:bg-accent/90 text-cream-0 font-slab shadow-btn-primary disabled:opacity-50"
+      >
+        {loading ? "Joining…" : `Join ${cookbookName} →`}
+      </Button>
+    </div>
+  );
+}
+
 function JoinButton({
   token,
   cookbookName,
@@ -152,7 +240,11 @@ function JoinButton({
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`/api/invites/${token}`, { method: "POST" });
+      const res = await fetch(`/api/invites/${token}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
       const data = await res.json();
       if (!res.ok) {
         setError(data.error ?? "Something went wrong.");
