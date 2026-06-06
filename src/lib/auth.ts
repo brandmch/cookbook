@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
   providers: [
     EmailProvider({
       from: process.env.RESEND_FROM ?? "noreply@myfamilyrecipes.com",
-      ...(process.env.NODE_ENV === "development"
+      ...(process.env.EMAIL_SERVER_HOST
         ? {
             server: {
               host: process.env.EMAIL_SERVER_HOST,
