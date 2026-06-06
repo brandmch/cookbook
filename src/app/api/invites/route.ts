@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { Resend } from "resend";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 function inviteEmailHtml({
   cookbookName,
@@ -156,9 +153,11 @@ export async function POST(req: NextRequest) {
   const acceptUrl = `${process.env.NEXTAUTH_URL}/invite/${invite.token}`;
   const inviterName = cookbook.owner.name ?? "Someone";
 
-  if (process.env.NODE_ENV === "development") {
+  if (!process.env.VERCEL) {
     console.log(`\n📧 [invite] ${normalizedEmail} → ${acceptUrl}\n`);
   } else {
+    const { Resend } = await import("resend");
+    const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: process.env.RESEND_FROM!,
       to: normalizedEmail,
@@ -208,9 +207,11 @@ export async function PATCH(req: NextRequest) {
   const acceptUrl = `${process.env.NEXTAUTH_URL}/invite/${invite.token}`;
   const inviterName = invite.cookbook.owner.name ?? "Someone";
 
-  if (process.env.NODE_ENV === "development") {
+  if (!process.env.VERCEL) {
     console.log(`\n📧 [resend invite] ${invite.email} → ${acceptUrl}\n`);
   } else {
+    const { Resend } = await import("resend");
+    const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: process.env.RESEND_FROM!,
       to: invite.email,

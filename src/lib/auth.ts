@@ -1,10 +1,7 @@
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
-import { Resend } from "resend";
 import { db } from "@/lib/db";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const authOptions: NextAuthOptions = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,6 +37,8 @@ export const authOptions: NextAuthOptions = {
           return;
         }
 
+        const { Resend } = await import("resend");
+        const resend = new Resend(process.env.RESEND_API_KEY);
         const { host } = new URL(url);
         const { error } = await resend.emails.send({
           from: process.env.RESEND_FROM ?? "noreply@myfamilyrecipes.com",
