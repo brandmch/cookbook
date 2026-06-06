@@ -2,8 +2,21 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "myfamilyrecipes",
+  title: "Fam Cookbook",
   description: "A warm, collaborative family cookbook.",
+  icons: {
+    icon: [
+      { url: "/icons/favicon-16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icons/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/mfr-app-icon-64.png", sizes: "64x64", type: "image/png" },
+      { url: "/icons/mfr-app-icon-256.png", sizes: "256x256", type: "image/png" },
+      { url: "/icons/mfr-app-icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/mfr-app-icon-120.png", sizes: "120x120", type: "image/png" },
+      { url: "/icons/mfr-app-icon-180.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

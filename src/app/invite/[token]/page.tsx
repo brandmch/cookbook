@@ -82,7 +82,7 @@ function InviteShell({ children }: { children: React.ReactNode }) {
       </a>
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <p className="font-mono text-xs eyebrow text-ink/50 tracking-widest mb-3">myfamilyrecipes</p>
+          <p className="font-mono text-xs eyebrow text-ink/50 tracking-widest mb-3">Fam Cookbook</p>
           <h1 className="font-hand text-4xl text-ink leading-tight">Family cookbook</h1>
         </div>
         <div className="bg-cream-0 rounded-2xl shadow-card p-7 relative overflow-hidden">

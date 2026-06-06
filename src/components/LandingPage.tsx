@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { CSSProperties } from "react";
 import type { LucideIcon } from "lucide-react";
 import { Bookmark, Mail, Users, ArrowRight } from "lucide-react";
@@ -174,29 +175,6 @@ const RECIPES: Recipe[] = [
 
 // ── Shared primitives ─────────────────────────────────────────────
 
-function Ornament({
-  size = 24,
-  color = C.ink,
-}: {
-  size?: number;
-  color?: string;
-}) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill={color}
-      aria-hidden
-    >
-      <path d="M12 3c0 4.2-2.8 6-6 6 3.2 0 6 2.8 6 6 0-3.2 2.8-6 6-6-3.2 0-6-2.8-6-6z" />
-      <path
-        d="M12 9c0 2.4-2.4 3-3 3 .6 0 3 .6 3 3 0-2.4 2.4-3 3-3-.6 0-3-.6-3-3z"
-        opacity=".3"
-      />
-    </svg>
-  );
-}
 
 function CbAvatar({
   initials,
@@ -360,20 +338,7 @@ function LandingNav() {
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-        <div
-          style={{
-            width: 38,
-            height: 38,
-            borderRadius: 9,
-            background: C.accent,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            boxShadow: `0 2px 0 ${C.accentDeep}`,
-          }}
-        >
-          <Ornament size={20} color="#fff7ec" />
-        </div>
+        <Image src="/icons/mfr-app-icon-64.png" alt="" width={38} height={38} style={{ borderRadius: 9 }} />
         <span
           style={{
             fontSize: 21,
@@ -382,7 +347,7 @@ function LandingNav() {
             fontFamily: F.slab,
           }}
         >
-          myfamilyrecipes
+          Fam Cookbook
         </span>
       </div>
       <div style={{ flex: 1 }} />
@@ -780,7 +745,7 @@ export function LandingPage() {
                 fontFamily: F.mono,
               }}
             >
-              myfamilyrecipes.com/hartwell
+              famcookbook.com/hartwell
             </div>
           </div>
           <div
@@ -933,7 +898,7 @@ export function LandingPage() {
               marginBottom: 10,
             }}
           >
-            <Ornament size={22} color={C.ink} />
+            <Image src="/icons/mfr-app-icon-64.png" alt="" width={32} height={32} style={{ borderRadius: 7 }} />
             <span
               style={{
                 fontSize: 18,
@@ -942,7 +907,7 @@ export function LandingPage() {
                 fontFamily: F.slab,
               }}
             >
-              myfamilyrecipes
+              Fam Cookbook
             </span>
           </div>
           <p
@@ -991,7 +956,7 @@ export function LandingPage() {
         }}
       >
         {/* <span style={{ fontSize: 12, color: C.inkFaint, fontFamily: F.mono }}>
-          © 2026 myfamilyrecipes.com · Made at the kitchen table
+          © 2026 famcookbook.com · Made at the kitchen table
         </span> */}
       </div>
     </div>

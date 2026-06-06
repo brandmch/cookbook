@@ -49,7 +49,7 @@ export default function LoginForm() {
 
         <div className="text-center mb-8">
           <p className="font-mono text-xs eyebrow text-ink/50 tracking-widest mb-3">
-            myfamilyrecipes
+            Fam Cookbook
           </p>
           <h1 className="font-hand text-5xl text-ink leading-tight">
             Your family cookbook

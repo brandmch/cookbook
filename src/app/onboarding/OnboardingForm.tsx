@@ -56,7 +56,7 @@ export default function OnboardingForm({ userName }: { userName: string }) {
         {/* Header */}
         <div className="text-center mb-8">
           <p className="font-mono text-xs eyebrow text-ink/50 tracking-widest mb-3">
-            myfamilyrecipes
+            Fam Cookbook
           </p>
           <h1 className="font-hand text-5xl text-ink leading-tight">
             {step === 1 && "Name your cookbook"}
@@ -165,7 +165,7 @@ function StepOne({
         />
         {slugPreview && (
           <p className="font-mono text-xs text-ink/40">
-            myfamilyrecipes.com/
+            famcookbook.com/
             <span className="text-accent">{slugPreview}</span>
           </p>
         )}
@@ -293,7 +293,7 @@ function StepThree({
           Your cookbook lives at:
         </p>
         <p className="font-mono text-sm text-accent mt-1 break-all">
-          myfamilyrecipes.com/{slug}
+          famcookbook.com/{slug}
         </p>
       </div>
       <p className="font-sans text-sm text-ink/60">

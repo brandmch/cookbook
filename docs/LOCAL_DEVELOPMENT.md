@@ -77,7 +77,7 @@ NEXTAUTH_URL="http://localhost:3000"
 # Leave these blank or use test values; invite emails will fail
 # gracefully in local dev if the key is missing or invalid.
 RESEND_API_KEY="re_xxxxxxxxxxxx"
-RESEND_FROM="noreply@myfamilyrecipes.com"
+RESEND_FROM="noreply@famcookbook.com"
 ```
 
 Generate a `NEXTAUTH_SECRET`:

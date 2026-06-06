@@ -31,11 +31,11 @@ function inviteEmailHtml({
           <!-- Body -->
           <tr>
             <td style="padding:40px 40px 32px;">
-              <p style="margin:0 0 4px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9a866f;font-weight:600;">myfamilyrecipes</p>
+              <p style="margin:0 0 4px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9a866f;font-weight:600;">Fam Cookbook</p>
               <h1 style="margin:0 0 16px;font-size:36px;color:#3a2c20;line-height:1.1;font-weight:700;">You're invited! 📖</h1>
               <p style="margin:0 0 24px;font-size:15px;color:#6e5a48;line-height:1.6;">
                 <strong style="color:#3a2c20;">${inviterName}</strong> has invited you to join
-                <strong style="color:#3a2c20;">${cookbookName}</strong> on myfamilyrecipes —
+                <strong style="color:#3a2c20;">${cookbookName}</strong> on Fam Cookbook —
                 a place to collect and share recipes across generations.
               </p>
               <table cellpadding="0" cellspacing="0" style="margin:0 0 28px;">

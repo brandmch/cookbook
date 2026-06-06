@@ -13,7 +13,7 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     EmailProvider({
-      from: process.env.RESEND_FROM ?? "noreply@myfamilyrecipes.com",
+      from: process.env.RESEND_FROM ?? "noreply@famcookbook.com",
       async sendVerificationRequest({ identifier: email, url, provider }) {
         // Locally: use nodemailer against EMAIL_SERVER_HOST (e.g. Mailpit/MailHog)
         // On Vercel (VERCEL=1): use Resend
@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
           await transport.sendMail({
             to: email,
             from: provider.from,
-            subject: `Sign in to myfamilyrecipes`,
+            subject: `Sign in to Fam Cookbook`,
             text: `Sign in: ${url}`,
             html: `<a href="${url}">Sign in →</a>`,
           });
@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
         const resend = new Resend(process.env.RESEND_API_KEY);
         const { host } = new URL(url);
         const { error } = await resend.emails.send({
-          from: process.env.RESEND_FROM ?? "noreply@myfamilyrecipes.com",
+          from: process.env.RESEND_FROM ?? "noreply@famcookbook.com",
           to: email,
           subject: `Sign in to ${host}`,
           html: `
@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
                   <table width="100%" style="max-width:480px;background:#faf4e6;border-radius:12px;box-shadow:0 2px 20px rgba(58,44,32,.12);overflow:hidden;">
                     <tr><td style="background:#bf6243;height:6px;"></td></tr>
                     <tr><td style="padding:36px 40px 28px;">
-                      <p style="margin:0 0 8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9c8a78;font-family:monospace;">myfamilyrecipes</p>
+                      <p style="margin:0 0 8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#9c8a78;font-family:monospace;">Fam Cookbook</p>
                       <h1 style="margin:0 0 20px;font-size:28px;color:#3a2c20;">Your magic link</h1>
                       <p style="margin:0 0 28px;font-size:15px;color:#5a4a3a;line-height:1.6;">Click the button below to sign in. This link expires in 24 hours and can only be used once.</p>
                       <a href="${url}" style="display:inline-block;background:#bf6243;color:#faf4e6;font-size:15px;font-weight:600;text-decoration:none;padding:14px 32px;border-radius:8px;">Sign in →</a>

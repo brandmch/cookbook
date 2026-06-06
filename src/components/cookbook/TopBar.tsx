@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
+import Image from "next/image";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -34,9 +35,12 @@ export default function TopBar({ userName, userEmail, userImage, cookbookSlug }:
       <div className="mx-auto max-w-5xl px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
 
         {/* Left: brand */}
-        <span className="font-mono text-[10px] eyebrow tracking-widest text-ink/40 shrink-0">
-          myfamilyrecipes
-        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          <Image src="/icons/mfr-app-icon-64.png" alt="Fam Cookbook" width={24} height={24} className="rounded-sm" />
+          <span className="font-mono text-[10px] eyebrow tracking-widest text-ink/40">
+            Fam Cookbook
+          </span>
+        </div>
 
         {/* Right: user menu */}
         <DropdownMenu>
