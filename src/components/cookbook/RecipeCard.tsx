@@ -9,7 +9,8 @@ type RecipeCardProps = {
     category: string;
     emoji: string | null;
     story: string | null;
-    serves: number;
+    yieldQuantity: number;
+    yieldUnit: string;
     time: string | null;
     contributor: { name: string | null };
   };
@@ -42,7 +43,7 @@ export default function RecipeCard({ cookbookSlug, recipe }: RecipeCardProps) {
             {recipe.time && (
               <span className="font-mono text-[10px] text-ink/60 leading-none">{recipe.time}</span>
             )}
-            <span className="font-mono text-[10px] text-ink/60 leading-none">serves {recipe.serves}</span>
+            <span className="font-mono text-[10px] text-ink/60 leading-none">Makes {recipe.yieldQuantity} {recipe.yieldUnit}</span>
           </div>
         </div>
       ) : (
@@ -52,7 +53,7 @@ export default function RecipeCard({ cookbookSlug, recipe }: RecipeCardProps) {
             {recipe.time && (
               <span className="font-mono text-[10px] text-white/80 leading-none">{recipe.time}</span>
             )}
-            <span className="font-mono text-[10px] text-white/80 leading-none">serves {recipe.serves}</span>
+            <span className="font-mono text-[10px] text-white/80 leading-none">Makes {recipe.yieldQuantity} {recipe.yieldUnit}</span>
           </div>
         </div>
       )}

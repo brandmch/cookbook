@@ -47,7 +47,8 @@ export default async function EditRecipePage({
       category: true,
       emoji: true,
       story: true,
-      serves: true,
+      yieldQuantity: true,
+      yieldUnit: true,
       time: true,
       contributorId: true,
       ingredients: {
@@ -69,7 +70,8 @@ export default async function EditRecipePage({
     category: recipe.category,
     emoji: recipe.emoji,
     story: recipe.story ?? "",
-    serves: recipe.serves,
+    yieldQuantity: recipe.yieldQuantity,
+    yieldUnit: recipe.yieldUnit,
     time: recipe.time ?? "",
     ingredients: recipe.ingredients.map((i) => ({
       quantity: i.quantity ?? "",

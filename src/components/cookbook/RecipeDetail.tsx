@@ -13,7 +13,8 @@ type Recipe = {
   category: string;
   emoji: string | null;
   story: string | null;
-  serves: number;
+  yieldQuantity: number;
+  yieldUnit: string;
   time: string | null;
   contributor: { name: string | null };
   ingredients: Ingredient[];
@@ -85,8 +86,8 @@ function scaleQty(q: string | null, factor: number): string {
 
 export default function RecipeDetail({ cookbookSlug, recipe, isAuthor }: Props) {
   const router = useRouter();
-  const [servings, setServings] = useState(recipe.serves);
-  const factor = recipe.serves > 0 ? servings / recipe.serves : 1;
+  const [yieldQty, setYieldQty] = useState(recipe.yieldQuantity);
+  const factor = recipe.yieldQuantity > 0 ? yieldQty / recipe.yieldQuantity : 1;
   const stampClass = CATEGORY_STAMPS[recipe.category] ?? "stamp-mains";
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -179,7 +180,7 @@ export default function RecipeDetail({ cookbookSlug, recipe, isAuthor }: Props) 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mb-6 font-sans text-sm text-ink-soft">
         <span>By {recipe.contributor.name ?? "Anonymous"}</span>
         <span className="text-line">·</span>
-        <span>Serves {recipe.serves}</span>
+        <span>Makes {recipe.yieldQuantity} {recipe.yieldUnit}</span>
         {recipe.time && (
           <>
             <span className="text-line">·</span>
@@ -203,25 +204,24 @@ export default function RecipeDetail({ cookbookSlug, recipe, isAuthor }: Props) 
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-slab font-semibold text-ink">Ingredients</h2>
-            {/* Serves scaler */}
-            <div className="flex items-center gap-2">
+            {/* Yield scaler */}
+            <div className="flex items-center gap-1.5">
               <button
-                onClick={() => setServings((s) => Math.max(1, s - 1))}
+                onClick={() => setYieldQty((q) => Math.max(1, q - 1))}
                 className="w-6 h-6 rounded-full bg-cream-2 hover:bg-cream-3 text-ink font-slab text-sm flex items-center justify-center transition-colors"
-                aria-label="Reduce servings"
+                aria-label="Decrease yield"
               >
                 −
               </button>
-              <span className="font-mono text-xs text-ink w-12 text-center">
-                {servings} {servings === 1 ? "serving" : "servings"}
-              </span>
+              <span className="font-mono text-xs text-ink tabular-nums">{yieldQty}</span>
               <button
-                onClick={() => setServings((s) => Math.min(100, s + 1))}
+                onClick={() => setYieldQty((q) => q + 1)}
                 className="w-6 h-6 rounded-full bg-cream-2 hover:bg-cream-3 text-ink font-slab text-sm flex items-center justify-center transition-colors"
-                aria-label="Increase servings"
+                aria-label="Increase yield"
               >
                 +
               </button>
+              <span className="font-mono text-xs text-ink-soft">{recipe.yieldUnit}</span>
             </div>
           </div>
 

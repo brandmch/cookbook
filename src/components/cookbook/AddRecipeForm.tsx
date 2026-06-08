@@ -44,7 +44,8 @@ type InitialValues = {
   category: string;
   emoji?: string | null;
   story: string;
-  serves: number;
+  yieldQuantity: number;
+  yieldUnit: string;
   time: string;
   ingredients: { quantity: string; unit: string; label: string }[];
   steps: { text: string }[];
@@ -64,7 +65,8 @@ export default function AddRecipeForm({ cookbookSlug, recipeId, initialValues }:
   const [emoji, setEmoji] = useState<string | null>(initialValues?.emoji ?? null);
   const [showPicker, setShowPicker] = useState(false);
   const [story, setStory] = useState(initialValues?.story ?? "");
-  const [serves, setServes] = useState(initialValues?.serves ?? 4);
+  const [yieldQuantity, setYieldQuantity] = useState(initialValues?.yieldQuantity ?? 4);
+  const [yieldUnit, setYieldUnit] = useState(initialValues?.yieldUnit ?? "servings");
   const [time, setTime] = useState(initialValues?.time ?? "");
 
   const ingredients = useRowList<IngredientRow>(
@@ -99,7 +101,8 @@ export default function AddRecipeForm({ cookbookSlug, recipeId, initialValues }:
           category,
           emoji: emoji || null,
           story,
-          serves,
+          yieldQuantity,
+          yieldUnit,
           time,
           ingredients: ingredients.rows,
           steps: steps.rows,
@@ -224,21 +227,34 @@ export default function AddRecipeForm({ cookbookSlug, recipeId, initialValues }:
           </div>
         </div>
 
-        {/* Serves + Time */}
-        <div className="grid grid-cols-2 gap-4">
+        {/* Makes (yield) + Time */}
+        <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="serves" className="font-slab text-sm text-ink/80">
-              Serves
-            </Label>
-            <Input
-              id="serves"
-              type="number"
-              min={1}
-              max={100}
-              value={serves}
-              onChange={(e) => setServes(Number(e.target.value))}
-              className="field"
-            />
+            <Label className="font-slab text-sm text-ink/80">Makes</Label>
+            <div className="flex gap-2 items-center">
+              <Input
+                id="yieldQuantity"
+                type="number"
+                min={1}
+                max={9999}
+                required
+                value={yieldQuantity}
+                onChange={(e) => setYieldQuantity(Number(e.target.value))}
+                className="field w-24"
+              />
+              <Input
+                id="yieldUnit"
+                type="text"
+                required
+                placeholder="servings, cookies, loaf, liter…"
+                value={yieldUnit}
+                onChange={(e) => setYieldUnit(e.target.value)}
+                className="field flex-1"
+              />
+            </div>
+            <p className="font-sans text-xs text-ink/40">
+              Makes {yieldQuantity || "—"} {yieldUnit || "—"}
+            </p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="time" className="font-slab text-sm text-ink/80">

@@ -1,11 +1,10 @@
 import { NextAuthOptions } from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import EmailProvider from "next-auth/providers/email";
 import { db } from "@/lib/db";
 
 export const authOptions: NextAuthOptions = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  adapter: PrismaAdapter(db) as any,
+  adapter: PrismaAdapter(db),
   session: { strategy: "database" },
   pages: {
     signIn: "/login",
