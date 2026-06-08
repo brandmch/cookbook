@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Recipe" ALTER COLUMN "emoji" DROP NOT NULL,
+ALTER COLUMN "emoji" DROP DEFAULT;

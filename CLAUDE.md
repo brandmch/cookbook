@@ -1,4 +1,4 @@
-# Family Cookbook — myfamilyrecipes.com
+# Fam Cookbook — famcookbook.com
 
 A multi-tenant family cookbook web app. Warm, nostalgic, cozy — like a handwritten recipe book.
 
