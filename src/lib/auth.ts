@@ -4,7 +4,14 @@ import EmailProvider from "next-auth/providers/email";
 import { db } from "@/lib/db";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(db),
+  adapter: {
+    ...PrismaAdapter(db),
+    // PrismaAdapter uses delete() which throws P2025 when no session exists.
+    // deleteMany() silently no-ops instead of crashing the email callback.
+    deleteSession: async (sessionToken: string) => {
+      await db.session.deleteMany({ where: { sessionToken } });
+    },
+  },
   session: { strategy: "database" },
   pages: {
     signIn: "/login",
