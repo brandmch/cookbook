@@ -26,7 +26,8 @@ type Recipe = {
   category: string;
   emoji: string | null;
   story: string | null;
-  serves: number;
+  yieldQuantity: number;
+  yieldUnit: string;
   time: string | null;
   contributor: { name: string | null };
 };

@@ -25,7 +25,8 @@ export async function PATCH(
     category?: string;
     emoji?: string;
     story?: string;
-    serves?: number;
+    yieldQuantity?: number;
+    yieldUnit?: string;
     time?: string;
     ingredients?: { quantity: string; unit: string; label: string }[];
     steps?: { text: string }[];
@@ -36,7 +37,7 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { title, category, emoji, story, serves, time, ingredients, steps } = body;
+  const { title, category, emoji, story, yieldQuantity, yieldUnit, time, ingredients, steps } = body;
 
   const updated = await db.$transaction(async (tx) => {
     if (ingredients !== undefined) {
@@ -74,7 +75,8 @@ export async function PATCH(
         ...(category && { category }),
         ...(emoji !== undefined && { emoji: emoji?.trim() || null }),
         ...(story !== undefined && { story: story.trim() || null }),
-        ...(serves !== undefined && { serves: Number(serves) || 4 }),
+        ...(yieldQuantity !== undefined && { yieldQuantity: Number(yieldQuantity) || 4 }),
+        ...(yieldUnit !== undefined && { yieldUnit: yieldUnit.trim() || "servings" }),
         ...(time !== undefined && { time: time.trim() || null }),
       },
       select: { id: true, slug: true },

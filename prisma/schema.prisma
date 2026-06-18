@@ -111,7 +111,8 @@ model Recipe {
   category      String   @default("Mains")
   emoji         String?
   story         String?  @db.Text
-  serves        Int      @default(4)
+  yieldQuantity Int      @default(4)
+  yieldUnit     String   @default("servings")
   time          String?
   tags          String[]
   createdAt     DateTime @default(now())
